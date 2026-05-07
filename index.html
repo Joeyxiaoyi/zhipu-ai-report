@@ -671,7 +671,7 @@
 
         
         // 从localStorage读取默认数据，如果没有则使用原始数据
-        let defaultData = JSON.parse(localStorage.getItem('zhipuDefaultData')) || originalDefaultData;
+        let defaultData = originalDefaultData;
         
         // 3月数据封存状态
         let isArchived = false;
