@@ -1015,7 +1015,7 @@
         // ===== 月度统计功能 END =====
 
         document.addEventListener('DOMContentLoaded', function() {            initializeReport(currentData);
-            setupFileUpload();            initMonthlyStats();
+            initMonthlyStats();
         });
         
         // 初始化封存UI
@@ -1033,90 +1033,7 @@
         // 设置封存控制事件
         
 
-        // 设置文件上传
-        function setupFileUpload() {
-            const uploadArea = document.getElementById('uploadArea');
-            const fileInput = document.getElementById('fileInput');
-            const fileInfo = document.getElementById('fileInfo');
-            const fileName = document.getElementById('fileName');
-            const resetBtn = document.getElementById('resetBtn');
-            
-            // 点击上传区域
-            uploadArea.addEventListener('click', () => fileInput.click());
-            
-            // 文件选择
-            fileInput.addEventListener('change', handleFileSelect);
-            
-            // 拖拽事件
-            uploadArea.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                uploadArea.classList.add('dragover');
-            });
-            
-            uploadArea.addEventListener('dragleave', (e) => {
-                e.preventDefault();
-                uploadArea.classList.remove('dragover');
-            });
-            
-            uploadArea.addEventListener('drop', (e) => {
-                e.preventDefault();
-                uploadArea.classList.remove('dragover');
-                
-                const files = e.dataTransfer.files;
-                if (files.length > 0) {
-                    handleFile(files[0]);
-                }
-            });
-            
-            // 重置按钮
-            resetBtn.addEventListener('click', () => {
-                const isRestoringOriginal = resetBtn.textContent === '恢复原始数据';
-                
-                if (isRestoringOriginal) {
-                    // 恢复原始数据
-                    if (confirm('确定要恢复为原始数据吗？\n\n这将清除localStorage中保存的新数据，恢复为HTML文件中的原始数据。')) {
-                        localStorage.removeItem('zhipuDefaultData');
-                        defaultData = originalDefaultData;
-                        currentData = defaultData;
-                        initializeReport(currentData);
-                        fileInfo.classList.remove('show');
-                        resetBtn.style.display = 'none';
-                        saveBtn.style.display = 'none';
-                        fileInput.value = '';
-                        resetBtn.textContent = '重置为默认数据';
-                        alert('✅ 已恢复为原始数据！');
-                    }
-                } else {
-                    // 重置为默认数据（临时预览模式下）
-                    if (confirm('确定要恢复为默认数据吗？\n\n当前临时预览的数据将被清除，恢复为默认数据。')) {
-                        currentData = defaultData;
-                        initializeReport(currentData);
-                        fileInfo.classList.remove('show');
-                        resetBtn.style.display = 'none';
-                        saveBtn.style.display = 'none';
-                        fileInput.value = '';
-                    }
-                }
-            });
-            
-            // 保存为新报告按钮
-            saveBtn.addEventListener('click', () => {
-                saveAsNewReport();
-            });
-
-            // 封存按钮事件
-            const archiveBtn = document.getElementById('archiveBtn');
-            if (archiveBtn) {            }
-        }
-        
-        // 处理文件选择
-        function handleFileSelect(e) {
-            const file = e.target.files[0];
-            if (file) {
-                handleFile(file);
-            }
-        }
-        
+        // 设置文件上传        
         // 处理文件
         function handleFile(file) {
             if (!file.name.match(/\.(xlsx|xls)$/i)) {
@@ -1227,7 +1144,8 @@
         
         // 初始化报告
         function initializeReport(data) {
-            const {jsonData, userMapping} = data;
+            const jsonData = (data && data.jsonData) ? data.jsonData : [];
+            const userMapping = (data && data.userMapping) ? data.userMapping : [];
             
             // 创建用户映射字典和分类映射字典
             const userDict = {};
